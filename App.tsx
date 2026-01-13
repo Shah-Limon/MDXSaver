@@ -66,6 +66,8 @@ const App: React.FC = () => {
   const handleLoadSample = () => {
     setContent(DEFAULT_PLACEHOLDER);
   };
+  
+  const isDownloadDisabled = !content || filename === 'untitled.mdx';
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200">
@@ -100,9 +102,9 @@ const App: React.FC = () => {
                 <div className="flex items-center space-x-3 flex-shrink-0">
                    <button 
                     onClick={handleDownload} 
-                    disabled={!content}
+                    disabled={isDownloadDisabled}
                     className="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 hover:text-emerald-300 border border-emerald-500/20 hover:border-emerald-500/40 rounded text-xs font-medium transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-                    title="Download .mdx"
+                    title={isDownloadDisabled ? "Enter a valid filename to download" : "Download .mdx"}
                    >
                      <Download className="w-3.5 h-3.5" />
                      <span>Download</span>
@@ -165,7 +167,7 @@ const App: React.FC = () => {
             <div className="pt-4">
               <Button 
                 onClick={handleDownload}
-                disabled={!content}
+                disabled={isDownloadDisabled}
                 variant="success"
                 className="w-full h-12 text-base shadow-emerald-500/20"
                 icon={<Download className="w-5 h-5" />}
