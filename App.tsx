@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Download, FileText, Copy, Trash2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Download, FileText } from 'lucide-react';
 import { Header } from './components/Header';
 import { Button } from './components/Button';
 import { StatusAlert } from './components/StatusAlert';
@@ -63,16 +63,6 @@ const App: React.FC = () => {
     setParseStatus({ isValid: false });
   };
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(content);
-  };
-
-  const handleClear = () => {
-    if (window.confirm('Are you sure you want to clear the editor?')) {
-      setContent('');
-    }
-  };
-
   const handleLoadSample = () => {
     setContent(DEFAULT_PLACEHOLDER);
   };
@@ -86,25 +76,36 @@ const App: React.FC = () => {
           {/* Main Editor Area */}
           <div className="lg:col-span-2 flex flex-col gap-4">
             <div className="relative flex-grow flex flex-col min-h-[500px] h-[calc(100vh-250px)] rounded-xl border border-slate-800 bg-slate-900/50 shadow-xl overflow-hidden group focus-within:ring-1 focus-within:ring-indigo-500/50 transition-all">
-              <div className="absolute top-0 left-0 right-0 h-9 bg-slate-900 border-b border-slate-800 flex items-center px-4 justify-between select-none">
-                <span className="text-xs font-mono text-slate-500 flex items-center">
-                  <span className="w-2 h-2 rounded-full bg-red-500/20 mr-2 border border-red-500/50"></span>
-                  Editor
-                </span>
-                <div className="flex space-x-2">
+              <div className="absolute top-0 left-0 right-0 h-10 bg-slate-900 border-b border-slate-800 flex items-center px-4 justify-between select-none z-10">
+                <div className="flex items-center gap-4 flex-1 min-w-0 mr-4">
+                  <span className="text-xs font-mono text-slate-500 flex items-center flex-shrink-0">
+                    <span className="w-2 h-2 rounded-full bg-red-500/20 mr-2 border border-red-500/50"></span>
+                    Editor
+                  </span>
+                  
+                  {/* Filename Input in Top Bar */}
+                  <div className="relative group flex items-center max-w-xs w-full hidden sm:flex">
+                    <FileText className="w-3.5 h-3.5 text-slate-600 absolute left-2 pointer-events-none group-focus-within:text-indigo-400 transition-colors" />
+                    <input 
+                      type="text" 
+                      value={filename}
+                      onChange={(e) => setFilename(e.target.value)}
+                      className="w-full bg-slate-950/50 border border-slate-800 hover:border-slate-700 focus:border-indigo-500/50 rounded py-1 pl-7 pr-2 text-xs font-mono text-slate-300 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-indigo-500/50 transition-all truncate"
+                      placeholder="filename.mdx"
+                      spellCheck={false}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-3 flex-shrink-0">
                    <button 
-                    onClick={handleCopy} 
-                    className="text-slate-500 hover:text-indigo-400 transition-colors p-1"
-                    title="Copy to Clipboard"
+                    onClick={handleDownload} 
+                    disabled={!content}
+                    className="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 hover:text-emerald-300 border border-emerald-500/20 hover:border-emerald-500/40 rounded text-xs font-medium transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                    title="Download .mdx"
                    >
-                     <Copy className="w-3.5 h-3.5" />
-                   </button>
-                   <button 
-                    onClick={handleClear} 
-                    className="text-slate-500 hover:text-red-400 transition-colors p-1"
-                    title="Clear"
-                   >
-                     <Trash2 className="w-3.5 h-3.5" />
+                     <Download className="w-3.5 h-3.5" />
+                     <span>Download</span>
                    </button>
                 </div>
               </div>
@@ -112,7 +113,7 @@ const App: React.FC = () => {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="Paste your MDX content here..."
-                className="flex-grow w-full bg-transparent p-4 mt-9 text-sm sm:text-base font-mono leading-relaxed text-slate-300 resize-none focus:outline-none placeholder-slate-700"
+                className="flex-grow w-full bg-transparent p-4 mt-10 text-sm sm:text-base font-mono leading-relaxed text-slate-300 resize-none focus:outline-none placeholder-slate-700"
                 spellCheck={false}
               />
             </div>
@@ -165,7 +166,8 @@ const App: React.FC = () => {
               <Button 
                 onClick={handleDownload}
                 disabled={!content}
-                className="w-full h-12 text-base shadow-indigo-500/20"
+                variant="success"
+                className="w-full h-12 text-base shadow-emerald-500/20"
                 icon={<Download className="w-5 h-5" />}
               >
                 Download .mdx
