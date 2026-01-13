@@ -1,0 +1,5 @@
+{
+  "name": "MDX Canonical Saver",
+  "description": "A utility to extract canonical slugs from MDX frontmatter and save files with the correct naming convention.",
+  "requestFramePermissions": []
+}
